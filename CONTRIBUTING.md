@@ -37,6 +37,15 @@ Native local dev (PostgreSQL + `uv` + `npm`) is primary — see each service's `
 - Conventional commits.
 - PR references its issue (`Closes #N`), CI green, and updates `AGENTS.md`/`README.md` when behavior changes.
 
+## Testing
+
+Each service ships a unit-test harness; tests are part of the Definition of Done.
+
+- **core / whatsapp** (pytest): `make test` (or `uv run pytest`). Tests live in `tests/`.
+- **admin** (vitest): `npm test`. Tests live beside source as `*.test.ts(x)`.
+
+Write unit tests for new logic (services, tools, normalizers, pure helpers). End-to-end tests are optional but welcome — e.g. core `/ingest` against a throwaway test DB, or admin flows via Playwright.
+
 ## Writing a Tool Module
 
 Tool modules are the extension point (each company's differentiator). See [`docs/ARCHITECTURE.md` §8](./docs/ARCHITECTURE.md) for the `ToolModule` contract and the *customer-defined collection + retriever* archetype.
