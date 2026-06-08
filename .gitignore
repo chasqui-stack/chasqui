@@ -1,0 +1,23 @@
+# Internal planning — not public yet (release when base code is ready)
+docs/sprints/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+
+# Kamal / deploy secrets
+.kamal/secrets
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
