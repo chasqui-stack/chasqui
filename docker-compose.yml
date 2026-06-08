@@ -1,0 +1,65 @@
+# One-command spin-up for collaborators (native local dev with psql + uv + npm
+# remains the primary workflow). Default `docker compose up` starts postgres +
+# core + admin. The WhatsApp gateway needs Meta credentials, so it's behind the
+# `gateway` profile: `docker compose --profile gateway up` (requires ./whatsapp/.env).
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: chasqui
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./core/config/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d chasqui"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  core:
+    build: ./core
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chasqui
+      JWT_SECRET_KEY: dev-secret-change-me
+      INTERNAL_API_KEY: devkey
+      CORS_ORIGINS: "http://localhost:3000"
+    command: sh -c "alembic upgrade head && gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8090"
+    ports:
+      - "8090:8090"
+
+  admin:
+    build:
+      context: ./admin
+      args:
+        VITE_API_BASE_URL: "http://localhost:8090"
+    depends_on:
+      - core
+    ports:
+      - "3000:3000"
+
+  whatsapp:
+    build: ./whatsapp
+    profiles: ["gateway"]
+    depends_on:
+      - core
+    env_file:
+      - ./whatsapp/.env
+    environment:
+      CORE_URL: "http://core:8090"
+      INTERNAL_API_KEY: devkey
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
