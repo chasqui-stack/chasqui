@@ -21,3 +21,7 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# Claude Code skill artifacts (not part of the project)
+.agents/
+skills-lock.json
