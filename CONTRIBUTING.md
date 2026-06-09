@@ -44,7 +44,9 @@ Each service ships a unit-test harness; tests are part of the Definition of Done
 - **core / whatsapp** (pytest): `make test` (or `uv run pytest`). Tests live in `tests/`.
 - **admin** (vitest): `npm test`. Tests live beside source as `*.test.ts(x)`.
 
-Write unit tests for new logic (services, tools, normalizers, pure helpers). End-to-end tests are optional but welcome — e.g. core `/ingest` against a throwaway test DB, or admin flows via Playwright.
+Write unit tests for new logic (services, tools, normalizers, pure helpers).
+
+**Core DB-backed tests** run against an auto-created `<postgres_db>_test` database with transactional-rollback isolation (each test rolls back; nothing ever commits) — no setup or cleanup needed beyond a local Postgres whose user can `CREATE DATABASE`. See `core/README.md` → Testing. Admin end-to-end flows via Playwright are optional but welcome.
 
 ## Writing a Tool Module
 
