@@ -22,20 +22,27 @@ EMBEDDING_PROVIDER=ollama  EMBEDDING_MODEL=nomic-embed-text       # local
 Switching providers requires **re-embedding every stored row** (memories,
 FAQ entries). A "re-embed all" admin action ships with Sprint 4.
 
-## Decision 2 — `EMBEDDING_DIM = 768` is the canonical dimension
+## Decision 2 — `EMBEDDING_DIM` is **provision-time `.env` config** (default 768)
 
-The DB schema (`Vector(768)`, migration 002) is the contract; every provider
-must produce 768:
+> *Amended 2026-06-10: originally a hardcoded constant; now env-driven so a
+> generated project can choose its dimension in the `chasqui new` wizard.*
 
-| Provider | How it hits 768 |
-|----------|-----------------|
-| Google `gemini-embedding-001` | Matryoshka — `output_dimensionality=768` requested (native 3072) |
-| OpenAI `text-embedding-3-*` | Matryoshka — `dimensions=768` requested |
-| Ollama `nomic-embed-text` | 768 native |
+The vector column width is created from `EMBEDDING_DIM` on the **first
+`alembic upgrade`** (migration 002 reads settings). It is NOT runtime
+config: changing it after provisioning requires a column migration +
+re-embedding every row. How providers honor the configured value:
 
-Why not 3072: MRL retains ~all retrieval quality at 768 for our scale
+| Provider | How it hits the configured dim |
+|----------|-------------------------------|
+| Google `gemini-embedding-001` | Matryoshka — `output_dimensionality` requested (native 3072) |
+| OpenAI `text-embedding-3-*` | Matryoshka — `dimensions` requested |
+| Ollama `nomic-embed-text` | fixed 768 native — must match `EMBEDDING_DIM` |
+
+**Default 768**: MRL retains ~all retrieval quality at our scale
 (per-contact memories, FAQ collections), storage is 4× cheaper, search is
-faster, and **768 is the sweet spot every major provider supports**.
+faster, and 768 is the sweet spot every major provider supports. A dev who
+wants gemini at full 3072 sets `EMBEDDING_DIM=3072` before first migrate —
+the Sprint 4 index creation auto-selects the strategy (see Decision 3).
 
 ## Decision 3 — Dimension limits are a pgvector concern, NOT a Postgres-version concern
 
