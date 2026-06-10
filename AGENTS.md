@@ -14,9 +14,15 @@ Chasqui is a base development stack for building custom AI agents on WhatsApp. T
 
 Services talk only through the **canonical message contract** (`docs/ARCHITECTURE.md` §5). The core never knows a channel exists.
 
+## Philosophy
+
+**Omakase, the Rails way** ([*Rails is omakase*](https://dhh.dk/2012/rails-is-omakase.html), [*The Rails Doctrine*](https://rubyonrails.org/doctrine)): a curated, opinionated menu — substitutable dishes (LLM/embeddings via `.env`), but the menu has an owner (Postgres+pgvector is identity, ADR-002). Conventions over configuration; decisions get written down as ADRs.
+
 ## Planning & workflow
 
 - **Architecture / design:** `docs/ARCHITECTURE.md`, `docs/design/DESIGN.md`.
+- **Decisions → ADRs:** `docs/design/adr-NNN-*.md`. Any non-obvious architectural decision (DB, dims, protocols) gets an ADR in the same PR/commit — **docs-as-code, no GitHub wiki** (wikis drift; `docs/` is versioned and reviewed with the code).
+- **End-of-sprint rule:** a sprint isn't closed until docs reflect it (service READMEs/AGENTS, ADRs for decisions taken, design docs for new archetypes).
 - **PRPs:** feature planning lives here in `PRPs/` (prp-manager skill: `npx skills add https://github.com/willywg/prp-manager --skill prp-manager`). Write a PRP before non-trivial features.
 - **Sprint plan:** `docs/sprints/` — **internal, gitignored** (contains local paths). Not public.
 - **Tracking:** issues live in each service repo; epics/cross-cutting here. Board: *Chasqui Roadmap* (org-level Project), grouped by `Sprint`/`Service`.

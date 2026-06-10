@@ -6,9 +6,9 @@
 
 Chasqui is a **base development stack** for building custom AI agents on WhatsApp. You generate a project from it (one project per company), and you get a working conversational agent out of the box — single conversation thread per contact, long-term memory, an FAQ knowledge base with RAG, an admin panel with editable prompts, and a **tool/module system** where you build the differentiating logic for that specific company.
 
-The philosophy: a solid, opinionated foundation that lets a developer start a real project with freedom, instead of wiring the same plumbing every time. Common things (prompts, FAQs, enabling tools) are **configurable from the admin panel**; genuinely new logic is **code** you add through the tool system.
+**The philosophy is omakase** — in the Rails sense ([*Rails is omakase*](https://dhh.dk/2012/rails-is-omakase.html), [*The Rails Doctrine*](https://rubyonrails.org/doctrine)): a curated, opinionated menu chosen by someone with skin in the game, instead of a buffet of abstractions. You can substitute dishes (the LLM and embeddings are `.env` swaps), but the menu has an owner: Postgres + pgvector is the stack's identity (ADR-002), conventions beat configuration, and the energy goes into your agent's differentiating logic — not into re-deciding plumbing. Common things (prompts, FAQs, enabling tools) are **configurable from the admin panel**; genuinely new logic is **code** you add through the tool system.
 
-It ships with a project generator (`generate-project.sh`) that scaffolds a personalized project — slug, display name, domain, Docker user, WhatsApp credentials — ready to run locally and deploy.
+It ships with a project generator (**`uvx chasqui new`**, Sprint 6) that scaffolds a personalized, configured project — LLM, embeddings/dims, database location, WhatsApp credentials — ready to run locally and deploy. A `chasqui generate module` subcommand scaffolds new tool modules, `rails generate`-style.
 
 ## 2. Design principles
 
