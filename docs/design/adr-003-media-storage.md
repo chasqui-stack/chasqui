@@ -18,11 +18,11 @@ URLs.** No multi-backend storage abstraction.
 1. **S3-compatible ≠ AWS.** The same four env vars (`STORAGE_ENDPOINT_URL`,
    `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY`, `STORAGE_SECRET_KEY`, optional
    `STORAGE_REGION`) cover AWS S3, Cloudflare R2, DigitalOcean Spaces,
-   Backblaze B2 **and MinIO in docker-compose** for local dev. An
-   Active-Storage-style engine abstraction (disk/GCS/Azure adapters) would
-   buy a permanent test matrix for users we don't have — same lesson as
-   ADR-002. The Sprint 8 wizard asks *"where is your bucket"*, never
-   *"which storage engine"*.
+   Backblaze B2 **and a local S3-compatible container in docker-compose**
+   for dev. An Active-Storage-style engine abstraction (disk/GCS/Azure
+   adapters) would buy a permanent test matrix for users we don't have —
+   same lesson as ADR-002. The Sprint 8 wizard asks *"where is your
+   bucket"*, never *"which storage engine"*.
 2. **The core owns storage** (business logic stays in core). The gateway
    keeps inlining media as base64 `data:` URIs in canonical `media_url` —
    the message contract (§5) does not change, and a future Telegram/web
@@ -47,6 +47,34 @@ URLs.** No multi-backend storage abstraction.
    `STORAGE_PUBLIC_ENDPOINT_URL` signs with the browser-reachable one.
 5. **The LLM context stays text-only.** History fed to the agent is
    unchanged; re-feeding stored media to the model is out of scope.
+
+## What about local-disk storage?
+
+Considered and rejected. A disk backend looks free but isn't: the core
+would have to serve the bytes itself (no presigned URLs → an authenticated
+streaming endpoint + caching), files don't survive a container redeploy
+without volume choreography (Kamal), it breaks the moment the core scales
+past one host, and it has no backup story. Meanwhile the "I don't have S3"
+case is already covered twice: **unset = degraded mode** (the stack works,
+media just isn't persisted) and **free S3-compatible tiers** (Cloudflare R2
+10 GB, Backblaze B2 10 GB) cost less effort than operating a disk backend
+well. Revisit only if a zero-dependency dev-toy mode shows real demand
+(same trigger shape as ADR-002's SQLite note).
+
+## Local dev bucket: RustFS, not MinIO (2026-06-10)
+
+MinIO — the classic choice — **archived its open-source repo on
+2026-04-25** (read-only, "no longer maintained", successor is the
+commercial AIStor). Pointing an OSS stack's compose at an abandoned image
+is a non-starter, so the dev bucket is **RustFS** (Apache-2.0, actively
+developed, MinIO-shaped: S3 API on :9000, console on :9001, creds via
+`RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY`; bucket bootstrapped by a one-shot
+`amazon/aws-cli` service — `mc` is MinIO Inc. tooling, also avoided).
+RustFS is young; that's acceptable because **the dev bucket is throwaway by
+design** — production points `STORAGE_*` at a managed bucket, and ADR-003's
+whole point is that swapping the compose service is a 10-line change
+(verified: boto3 upload → presign → download passes against it). Mature
+fallback if RustFS disappoints: SeaweedFS (Apache-2.0, 10+ years).
 
 ## What this layer also buys
 
