@@ -20,10 +20,42 @@ services:
       timeout: 5s
       retries: 10
 
+  # Media storage (ADR-003) — local S3-compatible bucket, zero setup.
+  # Console at http://localhost:9001 (chasqui / chasqui-secret).
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: chasqui
+      MINIO_ROOT_PASSWORD: chasqui-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot: creates the media bucket so `up` is all collaborators need.
+  minio-init:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 chasqui chasqui-secret &&
+      mc mb --ignore-existing local/chasqui-media"
+
   core:
     build: ./core
     depends_on:
       postgres:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     environment:
       POSTGRES_HOST: postgres
@@ -36,6 +68,13 @@ services:
       CORS_ORIGINS: "http://localhost:3000"
       # LLM/embeddings — export GOOGLE_API_KEY on the host before `up`
       GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      # Media storage (ADR-003): core uploads via the docker network, but
+      # presigned URLs must be browser-reachable → public endpoint override.
+      STORAGE_ENDPOINT_URL: "http://minio:9000"
+      STORAGE_PUBLIC_ENDPOINT_URL: "http://localhost:9000"
+      STORAGE_BUCKET: chasqui-media
+      STORAGE_ACCESS_KEY: chasqui
+      STORAGE_SECRET_KEY: chasqui-secret
     command: sh -c "alembic upgrade head && gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8090"
     ports:
       - "8090:8090"
@@ -65,3 +104,4 @@ services:
 
 volumes:
   pgdata:
+  miniodata:
