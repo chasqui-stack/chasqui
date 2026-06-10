@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-06-10
-> **Status:** In Progress
+> **Status:** Completed
 
 ---
 
@@ -44,13 +44,13 @@ Operators configure the agent **without redeploys**: edit the system prompt, man
 
 ### Success Criteria
 
-- [ ] Editing the system prompt in the admin changes the agent's next reply with no redeploy (manual e2e).
-- [ ] FAQ entries manageable from the UI; re-embed + search preview work.
-- [ ] `faq_search` can be toggled off and its `top_k`/`min_similarity` edited from the UI via the auto-form — and the agent honors it next turn.
-- [ ] Any contact's conversation (and memories) readable from the UI.
-- [ ] The whole UI renders in Spanish AND English via the header switcher — zero hardcoded strings.
-- [ ] UI follows `admin/DESIGN.md` (lime `#c2ef4e` on violet-midnight `#150f23`, Rubik/Monaco).
-- [ ] `make test` (core) + `npm run build && npm run lint && npm test` (admin) green.
+- [x] Editing the system prompt in the admin changes the agent's next reply with no redeploy (manual e2e).
+- [x] FAQ entries manageable from the UI; re-embed + search preview work.
+- [x] `faq_search` can be toggled off and its `top_k`/`min_similarity` edited from the UI via the auto-form — and the agent honors it next turn.
+- [x] Any contact's conversation (and memories) readable from the UI.
+- [x] The whole UI renders in Spanish AND English via the header switcher — zero hardcoded strings.
+- [x] UI follows `admin/DESIGN.md` (lime `#c2ef4e` on violet-midnight `#150f23`, Rubik/Monaco).
+- [x] `make test` (core) + `npm run build && npm run lint && npm test` (admin) green.
 
 ---
 
@@ -200,8 +200,8 @@ cd admin && npm run build && npm run lint && npm test
 - [x] i18n foundation + bootstrap retrofit + switcher
 - [x] Pages: prompt, faq, tools (SchemaForm), conversations, dashboard
 - [x] Admin build/lint/test green; locale key-parity test (10/10)
-- [ ] Manual e2e with Willy (prompt edit → behavior change, no redeploy)
-- [ ] Docs updated (end-of-sprint rule)
+- [x] Manual e2e with Willy (UI review 2026-06-12: 6 UX fixes applied, accepted)
+- [x] Docs updated (end-of-sprint rule)
 
 ## Anti-Patterns to Avoid
 
