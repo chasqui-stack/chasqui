@@ -4,7 +4,7 @@
 # `gateway` profile: `docker compose --profile gateway up` (requires ./whatsapp/.env).
 services:
   postgres:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg17
     environment:
       POSTGRES_DB: chasqui
       POSTGRES_USER: postgres
@@ -34,6 +34,8 @@ services:
       JWT_SECRET_KEY: dev-secret-change-me
       INTERNAL_API_KEY: devkey
       CORS_ORIGINS: "http://localhost:3000"
+      # LLM/embeddings — export GOOGLE_API_KEY on the host before `up`
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
     command: sh -c "alembic upgrade head && gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8090"
     ports:
       - "8090:8090"
