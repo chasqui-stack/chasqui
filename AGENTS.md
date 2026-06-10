@@ -31,6 +31,7 @@ Services talk only through the **canonical message contract** (`docs/ARCHITECTUR
 ## Conventions
 
 - Every repo has `AGENTS.md` (source of truth) + `CLAUDE.md` symlink.
+- **English-only codebases** (code, comments, LLM-facing prompt strings, API errors) — agents localize via the DB system prompt ("reply in the user's language"); the only user-facing literal (`FALLBACK_REPLY`) lives in `.env`. UI i18n is an admin-frontend concern.
 - Don't put business logic outside `core/`.
 - Don't break the canonical contract or commit secrets (`.kamal/secrets`, `.env`).
 - Submodules pin commits — bump them intentionally and commit the pointer here.
