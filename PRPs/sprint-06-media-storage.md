@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-06-10
-> **Status:** In Progress
+> **Status:** Completed
 
 ---
 
@@ -47,11 +47,11 @@ Storage is **optional**: unset → exactly today's behavior. **Ships in the firs
 
 ### Success Criteria
 
-- [ ] Sending a photo/audio over WhatsApp → object lands in the bucket; admin timeline shows the actual image / playable audio.
-- [ ] Storage unconfigured → everything works exactly as today (`media_url` NULL, badges in the panel).
-- [ ] Upload failure (bad creds, bucket down) → turn still answers; message persisted with NULL `media_url`; error logged.
-- [ ] `docker-compose up` gives a working local bucket with zero extra setup.
-- [ ] `make test` (core) + `npm run build && npm run lint && npm test` (admin) green.
+- [x] Sending a photo/audio over WhatsApp → object lands in the bucket; admin timeline shows the actual image / playable audio.
+- [x] Storage unconfigured → everything works exactly as today (`media_url` NULL, badges in the panel).
+- [x] Upload failure (bad creds, bucket down) → turn still answers; message persisted with NULL `media_url`; error logged.
+- [x] `docker-compose up` gives a working local bucket with zero extra setup.
+- [x] `make test` (core) + `npm run build && npm run lint && npm test` (admin) green.
 
 ---
 
@@ -188,16 +188,16 @@ docker compose up -d storage storage-init  # bucket auto-created
 
 ## Final Checklist
 
-- [ ] ADR-003 written
-- [ ] storage.py + settings + .env.example
-- [ ] Ingest uploads + persists key; failure/unconfigured → NULL
-- [ ] GET /admin/media/{message_id} + has_media
-- [ ] Core tests green (storage, ingest-with-media, endpoint)
-- [ ] Admin renders image/audio with badge fallback (i18n'd)
-- [ ] Admin build + lint + tests green
-- [ ] Local bucket (RustFS) in docker-compose with bootstrap
-- [ ] Docs updated (README/AGENTS, sprint doc)
-- [ ] Manual e2e with Willy (photo + audio → bucket → panel)
+- [x] ADR-003 written
+- [x] storage.py + settings + .env.example
+- [x] Ingest uploads + persists key; failure/unconfigured → NULL
+- [x] GET /admin/media/{message_id} + has_media
+- [x] Core tests green (storage, ingest-with-media, endpoint)
+- [x] Admin renders image/audio with badge fallback (i18n'd)
+- [x] Admin build + lint + tests green
+- [x] Local bucket (RustFS) in docker-compose with bootstrap
+- [x] Docs updated (README/AGENTS, sprint doc)
+- [x] Manual e2e with Willy (photo + audio over WhatsApp → RustFS bucket → visible/playable in the panel; accepted 2026-06-10)
 
 ---
 
