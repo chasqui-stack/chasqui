@@ -27,6 +27,7 @@ Services talk only through the **canonical message contract** (`docs/ARCHITECTUR
 - **Sprint plan:** `docs/sprints/` — **internal, gitignored** (contains local paths). Not public.
 - **Tracking:** issues live in each service repo; epics/cross-cutting here. Board: *Chasqui Roadmap* (org-level Project), grouped by `Sprint`/`Service`.
 - **Branches:** `feat/<short>`, `fix/<short>`, `docs/<short>`; conventional commits; PR `Closes #N`.
+- **Releasing a version:** strict order — tag services (`vX.Y.Z`) → bump parent submodules + tag → CLI pins the stack tag and publishes to PyPI by pushing its own tag (trusted publishing). **The full ceremony is documented in the [`cli` repo's AGENTS.md](https://github.com/chasqui-stack/cli/blob/main/AGENTS.md)** — read it before tagging anything.
 
 ## Conventions
 
