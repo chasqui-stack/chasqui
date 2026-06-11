@@ -1,8 +1,10 @@
 # PRP: Sprint 8 — `chasqui new` CLI, Deploy & OSS Release
 
-> **Version:** 1.0
+> **Version:** 1.1
 > **Created:** 2026-06-11
-> **Status:** Proposed — awaiting Willy's review
+> **Status:** Completed — accepted by Willy 2026-06-11 (full e2e from the
+> published package: `uvx chasqui new` → wizard → agent answers on
+> WhatsApp, FAQ-RAG and handoff inbox working; `chasqui` 0.1.x on PyPI)
 
 ---
 
@@ -101,17 +103,22 @@ single-repo output, best-effort resumable provisioning.
 
 ### Success criteria
 
-- [ ] On a machine with `uv` + Node 22 + Postgres: `uvx chasqui new demo` →
+- [x] On a machine with `uv` + Node 22 + Postgres: `uvx chasqui new demo` →
       answer the wizard → start the three services → message the WhatsApp
       number → the agent replies; panel, handoff inbox and leads work.
-      **Without hand-editing a single file.**
+      **Without hand-editing a single file.** (Willy's e2e, 2026-06-11:
+      wizard clean, WhatsApp reply, FAQ-RAG and handoff confirmed.)
 - [x] `chasqui new demo --defaults --skip-provision` is non-interactive
       (CI-able) and `chasqui --version` works via `uvx` (verified from the
       published PyPI package, 2026-06-11).
-- [ ] `chasqui generate module hello` inside the project → `make test`
-      green with the module auto-discovered.
+- [x] `chasqui generate module hello` inside the project → `make test`
+      green with the module auto-discovered (verified 2026-06-11; surfaced
+      a real bug: test deps were an optional extra `uv sync` never
+      installed → moved to `[dependency-groups]` in core+gateway, v0.1.2).
 - [ ] A fresh VM deploys the three services following `docs/DEPLOY.md` with
-      `kamal deploy` (doc-verified walkthrough).
+      `kamal deploy` — **deferred post-beta** (needs a real VM; the guide,
+      de-templated deploy.ymls, secrets examples and prod Docker builds are
+      all in place).
 - [x] No `psicolab` / `saas-template` / real-IP strings in anything public.
 - [x] `v0.1.0` tagged on all five repos; `chasqui` 0.1.0 on PyPI (trusted
       publishing, 2026-06-11).
@@ -207,5 +214,22 @@ single-repo output, best-effort resumable provisioning.
       publisher; workflow green) → GitHub Releases on cli + parent →
       verified end-to-end: `uvx chasqui new demo` scaffolds from PyPI +
       the real tags (2026-06-11).
-- [ ] Manual e2e with Willy: `uvx chasqui new demo` from scratch →
-      WhatsApp message answered → panel/handoff/leads OK.
+- [x] Manual e2e with Willy: `uvx chasqui new demo` from scratch →
+      WhatsApp message answered → panel/FAQ/handoff OK (**accepted
+      2026-06-11**).
+
+## Mid-beta additions (Willy's feedback, 2026-06-11)
+
+- **v0.1.1** — wizard asks the three service ports (defaults 8090/8000/5191;
+  several stacks coexist — core/gateway `make dev` honor `PORT`, admin
+  honors `VITE_PORT`); `docs/WHATSAPP-SETUP.md` (Meta credentials
+  step-by-step) linked from the wizard, epilogue and READMEs; admin swapped
+  to `@vitejs/plugin-react` (Rolldown-Vite warning).
+- **v0.1.2** — test deps moved from an optional extra to
+  `[dependency-groups]` in core+gateway: plain `uv sync` (what `chasqui
+  new` runs) now installs them, so `make test` works in generated projects.
+- **CLI 0.1.3** — initial commit moved AFTER provisioning: npm/uv lockfile
+  updates land in it, generated projects start with a clean tree.
+- **Release ceremony documented** in the cli repo's AGENTS.md (+ pointer in
+  the parent's): services tag first → CLI pins `STACK_TAG` + bumps version
+  in two places → tag push = trusted-publishing → verify via `uvx`.
