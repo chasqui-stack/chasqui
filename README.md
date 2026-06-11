@@ -35,7 +35,9 @@ as ADRs.
 ## Quickstart
 
 Prerequisites: [`uv`](https://docs.astral.sh/uv/), Node 22, and a PostgreSQL
-with the pgvector extension (or use the generated docker-compose).
+with the pgvector extension (or use the generated docker-compose). For the
+WhatsApp side you'll want a free Meta developer app — step-by-step:
+[`docs/WHATSAPP-SETUP.md`](./docs/WHATSAPP-SETUP.md).
 
 ```bash
 uvx chasqui new my-agent      # the wizard asks: LLM, embeddings, where's
