@@ -1,8 +1,10 @@
 # PRP: Sprint 7 — Human Handoff Inbox & Leads
 
-> **Version:** 1.0
+> **Version:** 1.1
 > **Created:** 2026-06-10
-> **Status:** In Progress
+> **Status:** Completed — accepted by Willy 2026-06-11 (full e2e: handoff →
+> silence → panel replies with text/emoji/image/document/voice over WhatsApp
+> → delivery-status badges → resume bot → leads)
 
 ---
 
@@ -89,15 +91,15 @@ Last product sprint of the first release. Design locked in
 
 ### Success criteria
 
-- [ ] "quiero hablar con una persona" → bot confirms and **goes silent**;
+- [x] "quiero hablar con una persona" → bot confirms and **goes silent**;
       conversation badged in the admin; webhook/email fired (when configured).
-- [ ] Operator reply from the panel arrives on the user's WhatsApp; thread
+- [x] Operator reply from the panel arrives on the user's WhatsApp; thread
       shows it as outbound with the admin's identity.
-- [ ] "Resume bot" → the agent answers the next message again.
-- [ ] Lead with configurable required/extra fields → row in `/leads`.
-- [ ] A second gateway could implement `/send` + ride the mode semantics with
+- [x] "Resume bot" → the agent answers the next message again.
+- [x] Lead with configurable required/extra fields → row in `/leads`.
+- [x] A second gateway could implement `/send` + ride the mode semantics with
       zero core changes (contract documented).
-- [ ] `make test` (core) + gateway pytest + admin build/lint/test green.
+- [x] `make test` (core, 124) + gateway pytest (23) + admin build/lint/test green.
 
 ---
 
@@ -163,22 +165,22 @@ Last product sprint of the first release. Design locked in
 
 ## Tasks
 
-- [ ] ADR-004 + this PRP.
-- [ ] Core: migration 006 (`mode` + `leads`), `Lead` model via
+- [x] ADR-004 + this PRP.
+- [x] Core: migration 006 (`mode` + `leads`), `Lead` model via
       `register_models()`.
-- [ ] Core: ingest short-circuit; `human_handoff` sets mode + notifies;
+- [x] Core: ingest short-circuit; `human_handoff` sets mode + notifies;
       `notify_service` (webhook + SMTP).
-- [ ] Core: `channel_send` + inbox endpoints (messages POST / mode PUT /
+- [x] Core: `channel_send` + inbox endpoints (messages POST / mode PUT /
       list fields+filter+sort) + `lead_capture` v2 + leads listing.
-- [ ] Core tests: short-circuit, 409, send seam (stubbed), WINDOW_EXPIRED
+- [x] Core tests: short-circuit, 409, send seam (stubbed), WINDOW_EXPIRED
       passthrough, lead requirements loop, leads listing, notify senders.
-- [ ] Gateway: `POST /send` + error mapping + tests.
-- [ ] Admin: list badge/filter, take-over + composer + polling, 24h
+- [x] Gateway: `POST /send` + error mapping + tests.
+- [x] Admin: list badge/filter, take-over + composer + polling, 24h
       indicator, `/leads`, dashboard card, i18n.
-- [ ] Docs: ARCHITECTURE outbound contract, READMEs/AGENTS, `.env.example`s,
+- [x] Docs: ARCHITECTURE outbound contract, READMEs/AGENTS, `.env.example`s,
       compose; submodule bumps; sprint doc ticked.
-- [ ] Manual e2e with Willy (handoff → silence → panel reply → WhatsApp →
-      resume bot; lead visible in /leads).
+- [x] Manual e2e with Willy (handoff → silence → panel reply → WhatsApp →
+      resume bot; lead visible in /leads; **accepted 2026-06-11**).
 
 ## Mid-sprint additions (Willy's e2e feedback, 2026-06-11)
 
