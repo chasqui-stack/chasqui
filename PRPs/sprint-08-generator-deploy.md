@@ -105,15 +105,18 @@ single-repo output, best-effort resumable provisioning.
       answer the wizard → start the three services → message the WhatsApp
       number → the agent replies; panel, handoff inbox and leads work.
       **Without hand-editing a single file.**
-- [ ] `chasqui new demo --defaults --skip-provision` is non-interactive
-      (CI-able) and `chasqui --version` works via `uvx`.
+- [x] `chasqui new demo --defaults --skip-provision` is non-interactive
+      (CI-able) and `chasqui --version` works via `uvx` (verified from the
+      published PyPI package, 2026-06-11).
 - [ ] `chasqui generate module hello` inside the project → `make test`
       green with the module auto-discovered.
 - [ ] A fresh VM deploys the three services following `docs/DEPLOY.md` with
       `kamal deploy` (doc-verified walkthrough).
-- [ ] No `psicolab` / `saas-template` / real-IP strings in anything public.
-- [ ] `v0.1.0` tagged on all five repos; `chasqui` 0.1.0 on PyPI.
-- [ ] CLI pytest green; existing core/gateway/admin suites stay green.
+- [x] No `psicolab` / `saas-template` / real-IP strings in anything public.
+- [x] `v0.1.0` tagged on all five repos; `chasqui` 0.1.0 on PyPI (trusted
+      publishing, 2026-06-11).
+- [x] CLI pytest green (19); existing core (124) / gateway (23) / admin
+      suites stay green.
 
 ---
 
@@ -199,9 +202,10 @@ single-repo output, best-effort resumable provisioning.
 - [x] OSS polish: LICENSEs (already in all repos), parent README rewrite
       (uvx quickstart + badges), CONTRIBUTING (already existed),
       `docs/MODULES.md`, service README pass (internal sprint refs dropped).
-- [ ] Release train: sanitize ✓ → tags `v0.1.0` ×4 ✓ (2026-06-11; real
-      codeload fetch at the tag verified) → CLI 0.1.0 committed, tag created
-      locally — **pending: Willy's PyPI account + trusted publisher, then
-      push the cli tag to publish** → submodule bumps ✓.
+- [x] Release train: sanitize → tags `v0.1.0` ×5 → `chasqui` 0.1.0
+      **published on PyPI** via trusted publishing (Willy set up the
+      publisher; workflow green) → GitHub Releases on cli + parent →
+      verified end-to-end: `uvx chasqui new demo` scaffolds from PyPI +
+      the real tags (2026-06-11).
 - [ ] Manual e2e with Willy: `uvx chasqui new demo` from scratch →
       WhatsApp message answered → panel/handoff/leads OK.
