@@ -128,10 +128,15 @@ var per channel, zero core code for a new one):
 // core → gateway  POST /send
 {
   "contact": { "channel": "whatsapp", "external_id": "<bsuid>", "wa_id": "51999888777" },
-  "message": { "type": "text", "text": "Hi, this is Ana from the team…" }
+  "message": {
+    "type": "text",                  // text | image | document | audio
+    "text": "Hi, this is Ana from the team…",   // body, or caption for image/document
+    "media_url": null,               // base64 data: URI for media — the MIRROR of inbound
+    "filename": null                 // documents: what the channel shows the user
+  }
 }
 // 200 → { "status": "sent", "message_id": "<channel id>" }
-// errors → { "detail": { "code": "NO_WA_ID" | "WINDOW_EXPIRED" | "SEND_FAILED" | "UNSUPPORTED_TYPE", "message": "…" } }
+// errors → { "detail": { "code": "NO_WA_ID" | "WINDOW_EXPIRED" | "SEND_FAILED" | "UNSUPPORTED_TYPE" | "INVALID_MEDIA", "message": "…" } }
 ```
 
 Error `code`s flow through to the admin panel (e.g. WhatsApp's 24h

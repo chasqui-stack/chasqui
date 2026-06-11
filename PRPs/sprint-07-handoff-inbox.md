@@ -179,3 +179,19 @@ Last product sprint of the first release. Design locked in
       compose; submodule bumps; sprint doc ticked.
 - [ ] Manual e2e with Willy (handoff → silence → panel reply → WhatsApp →
       resume bot; lead visible in /leads).
+
+## Mid-sprint additions (Willy's e2e feedback, 2026-06-11)
+
+- **Fix:** WA_PHONE_ID now passed to the PyWa client — inbound replies infer
+  the sender from the update, client-initiated sends can't (SEND_FAILED bug).
+- **Fix:** the open chat follows new messages when pinned near the bottom
+  (own sends + polled inbound); reading older history is never yanked down.
+- **Outbound media** (the ADR-004 "revisit" trigger arrived same-sprint):
+  `/send` grows `type: image|document|audio` + `media_url` as base64 data URI
+  (mirror of inbound) + `filename`; gateway maps PyWa send_image/document/
+  audio; core validates per-type size caps (5/25/16 MB), uploads outbound
+  media to the bucket (log-and-NULL — never undo a delivered message) so the
+  timeline renders it. Composer: dependency-free emoji picker, file attach
+  (jpg/png/webp/pdf/doc/docx/xls/xlsx), voice notes via MediaRecorder
+  (`audio/mp4` preferred — Meta rejects webm; webm fallback may SEND_FAILED
+  on old browsers).

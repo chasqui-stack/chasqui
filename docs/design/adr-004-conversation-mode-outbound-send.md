@@ -140,5 +140,12 @@ universal seam.
 - Meta ships BSUID send endpoints → drop the `wa_id` requirement in the
   WhatsApp gateway (`NO_WA_ID` disappears).
 - Template messages land (backlog) → `/send` grows `type: "template"`.
-- A channel needs non-text outbound (media) → extend `message` the same way
-  the inbound contract does (`media_url`).
+- ~~A channel needs non-text outbound (media) → extend `message` the same way
+  the inbound contract does (`media_url`)~~ — **landed same sprint** (Willy's
+  e2e feedback, 2026-06-11): `/send` carries `type: image|document|audio`
+  with `media_url` as a base64 `data:` URI (the exact mirror of inbound —
+  gateways can never fetch core-private URLs) + `filename` for documents.
+  The core also uploads outbound media to the bucket (ADR-003 path) so the
+  admin timeline renders what the operator sent. WhatsApp maps PyWa
+  `send_image`/`send_document`/`send_audio`; the composer records voice as
+  `audio/mp4` when the browser supports it (Meta rejects webm).
