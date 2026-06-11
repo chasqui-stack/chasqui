@@ -199,7 +199,9 @@ single-repo output, best-effort resumable provisioning.
 - [x] OSS polish: LICENSEs (already in all repos), parent README rewrite
       (uvx quickstart + badges), CONTRIBUTING (already existed),
       `docs/MODULES.md`, service README pass (internal sprint refs dropped).
-- [ ] Release train: sanitize → tags `v0.1.0` ×4 → publish `chasqui` 0.1.0
-      → repos public → submodule bumps.
+- [ ] Release train: sanitize ✓ → tags `v0.1.0` ×4 ✓ (2026-06-11; real
+      codeload fetch at the tag verified) → CLI 0.1.0 committed, tag created
+      locally — **pending: Willy's PyPI account + trusted publisher, then
+      push the cli tag to publish** → submodule bumps ✓.
 - [ ] Manual e2e with Willy: `uvx chasqui new demo` from scratch →
       WhatsApp message answered → panel/handoff/leads OK.
