@@ -8,7 +8,7 @@ Chasqui is a **base development stack** for building custom AI agents on WhatsAp
 
 **The philosophy is omakase** — in the Rails sense ([*Rails is omakase*](https://dhh.dk/2012/rails-is-omakase.html), [*The Rails Doctrine*](https://rubyonrails.org/doctrine)): a curated, opinionated menu chosen by someone with skin in the game, instead of a buffet of abstractions. You can substitute dishes (the LLM and embeddings are `.env` swaps), but the menu has an owner: Postgres + pgvector is the stack's identity (ADR-002), conventions beat configuration, and the energy goes into your agent's differentiating logic — not into re-deciding plumbing. Common things (prompts, FAQs, enabling tools) are **configurable from the admin panel**; genuinely new logic is **code** you add through the tool system.
 
-It ships with a project generator (**`uvx chasqui new`**, Sprint 6) that scaffolds a personalized, configured project — LLM, embeddings/dims, database location, WhatsApp credentials — ready to run locally and deploy. A `chasqui generate module` subcommand scaffolds new tool modules, `rails generate`-style.
+It ships with a project generator (**`uvx chasqui new`**, the [`cli`](https://github.com/chasqui-stack/cli) repo) that scaffolds a personalized, configured project — LLM, embeddings/dims, database location, WhatsApp credentials — ready to run locally and deploy. A `chasqui generate module` subcommand scaffolds new tool modules, `rails generate`-style.
 
 ## 2. Design principles
 

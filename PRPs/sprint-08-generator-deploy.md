@@ -196,8 +196,9 @@ single-repo output, best-effort resumable provisioning.
 - [x] Deploy: de-template gateway/admin `deploy.yml`s,
       `.kamal/secrets.example` ×3, Dockerfile prod-build check (all three
       build clean, 2026-06-11), `docs/DEPLOY.md`.
-- [ ] OSS polish: LICENSEs, parent README rewrite, CONTRIBUTING,
-      `docs/MODULES.md`, service README pass.
+- [x] OSS polish: LICENSEs (already in all repos), parent README rewrite
+      (uvx quickstart + badges), CONTRIBUTING (already existed),
+      `docs/MODULES.md`, service README pass (internal sprint refs dropped).
 - [ ] Release train: sanitize → tags `v0.1.0` ×4 → publish `chasqui` 0.1.0
       → repos public → submodule bumps.
 - [ ] Manual e2e with Willy: `uvx chasqui new demo` from scratch →
