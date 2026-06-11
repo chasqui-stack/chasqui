@@ -76,6 +76,9 @@ services:
       STORAGE_BUCKET: chasqui-media
       STORAGE_ACCESS_KEY: chasqui
       STORAGE_SECRET_KEY: chasqui-secret
+      # Outbound seam (ADR-004): where operator replies go. Only resolvable
+      # when the gateway profile is up; sends fail with a clear error otherwise.
+      CHANNEL_WHATSAPP_SEND_URL: "http://whatsapp:8000/send"
     command: sh -c "alembic upgrade head && gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8090"
     ports:
       - "8090:8090"

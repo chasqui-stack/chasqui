@@ -114,10 +114,36 @@ The seam that makes the system multi-channel. The core never knows WhatsApp exis
 }
 ```
 
+An **empty `messages` list is silence** — that's how human-mode conversations
+(§5.1) go quiet on every channel with zero gateway changes.
+
+### 5.1 Canonical outbound contract — `POST /send` (ADR-004)
+
+The mirror of `/ingest`, for **admin-initiated** messages (the human-handoff
+inbox). Every gateway exposes it with the same `INTERNAL_API_KEY`; the core
+resolves the URL per channel from `.env` (`CHANNEL_WHATSAPP_SEND_URL` — one
+var per channel, zero core code for a new one):
+
+```jsonc
+// core → gateway  POST /send
+{
+  "contact": { "channel": "whatsapp", "external_id": "<bsuid>", "wa_id": "51999888777" },
+  "message": { "type": "text", "text": "Hi, this is Ana from the team…" }
+}
+// 200 → { "status": "sent", "message_id": "<channel id>" }
+// errors → { "detail": { "code": "NO_WA_ID" | "WINDOW_EXPIRED" | "SEND_FAILED" | "UNSUPPORTED_TYPE", "message": "…" } }
+```
+
+Error `code`s flow through to the admin panel (e.g. WhatsApp's 24h
+customer-service window → `WINDOW_EXPIRED`). Conversation ownership lives in
+`conversations.mode` (`"agent" | "human"`): the ingest pipeline checks it
+FIRST and runs no agent turn in human mode. Full rationale:
+`docs/design/adr-004-conversation-mode-outbound-send.md`.
+
 ## 6. Core domain model
 
 - **`contacts`** — the person on the other side. Unique by `(channel, external_id)`, where `external_id` is the **BSUID** for WhatsApp. `wa_id` is stored when available but is no longer the primary key (§10).
-- **`conversations`** — a **single thread per contact**. Orchestrator state lives in `conversation_state` (or embedded).
+- **`conversations`** — a **single thread per contact**. `mode` (`"agent" | "human"`, indexed) says who owns the replies (ADR-004); orchestrator state lives in `conversation_state` (or embedded).
 - **`messages`** — full inbound/outbound history with type + metadata. This is the LLM context.
 - **`memories`** — long-term memory extraction so the agent doesn't forget the past (summaries, facts about the contact). A memory retriever injects what's relevant into the prompt. Backed by `pgvector`.
 - **Orchestrator (LangGraph):** a configurable state machine. The base ships a minimal graph (router → tools → respond); each project extends it.
