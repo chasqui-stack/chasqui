@@ -86,12 +86,17 @@ single-repo output, best-effort resumable provisioning.
 
 ### Part D — Release train (order matters)
 
-1. Sanitize deploy.ymls (Part B) — *before anything goes public*.
+1. ~~Sanitize deploy.ymls (Part B)~~ — **done 2026-06-11**. ⚠️ Discovery:
+   the org repos were ALREADY public, so the leaked IP/registry user sat in
+   public history (low risk — no secrets; rewriting history is Willy's
+   call, probably not worth it).
 2. Final docs pass; submodule bumps in the parent.
 3. Tag `v0.1.0`: core, whatsapp, admin, parent.
 4. CLI pins the `v0.1.0` stack tag → publish `chasqui` 0.1.0 to PyPI
-   (claim the name early — see gotcha 1) → tag cli `v0.1.0`.
-5. Repos public (codeload fetch only works then).
+   (claim the name early — see gotcha 1; trusted publisher setup on PyPI
+   is Willy's account) → tag cli `v0.1.0`.
+5. ~~Repos public~~ — already public; codeload works as soon as the tag
+   exists.
 6. e2e with Willy: `uvx chasqui new demo` on a clean setup.
 
 ### Success criteria
@@ -178,17 +183,19 @@ single-repo output, best-effort resumable provisioning.
 
 ## Tasks
 
-- [ ] ADR-005 + this PRP (parent commit).
-- [ ] New repo `chasqui-stack/cli`: skeleton (pyproject, typer app,
+- [x] ADR-005 + this PRP (parent commit).
+- [x] New repo `chasqui-stack/cli`: skeleton (pyproject, typer app,
       pytest, CI, LICENSE, README, AGENTS.md + CLAUDE.md symlink).
-- [ ] Fetch + layout + rename manifest (`--ref`, local-path dev override).
-- [ ] Wizard + `.env` rendering + auto-secrets (golden-file tests).
-- [ ] Provision pipeline + epilogue + `--defaults` / `--skip-provision`.
-- [ ] `chasqui generate module <name>` (+ `--with-models`, `--with-admin`)
+- [x] Fetch + layout + rename manifest (`--ref`, local-path dev override).
+- [x] Wizard + `.env` rendering + auto-secrets (golden-file tests).
+- [x] Provision pipeline + epilogue + `--defaults` / `--skip-provision`
+      (full-provision e2e against the local stack: all six steps green,
+      admin seeded, 2026-06-11).
+- [x] `chasqui generate module <name>` (+ `--with-models`, `--with-admin`)
       + golden-file tests.
-- [ ] Deploy: de-template gateway/admin `deploy.yml`s,
-      `.kamal/secrets.example` ×3, Dockerfile prod-build check,
-      `docs/DEPLOY.md`.
+- [x] Deploy: de-template gateway/admin `deploy.yml`s,
+      `.kamal/secrets.example` ×3, Dockerfile prod-build check (all three
+      build clean, 2026-06-11), `docs/DEPLOY.md`.
 - [ ] OSS polish: LICENSEs, parent README rewrite, CONTRIBUTING,
       `docs/MODULES.md`, service README pass.
 - [ ] Release train: sanitize → tags `v0.1.0` ×4 → publish `chasqui` 0.1.0
