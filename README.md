@@ -1,6 +1,6 @@
 <div align="center">
 
-# Chasqui
+<img src="docs/assets/brand/chasqui-logo.png" alt="Chasqui" width="440">
 
 **Open-source stack for building custom AI chat agents — self-hosted, channel-agnostic, production-minded.**
 
