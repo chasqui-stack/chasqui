@@ -4,7 +4,7 @@
 
 **Open-source stack for building custom AI chat agents — self-hosted, channel-agnostic, production-minded.**
 
-WhatsApp today · Telegram and web widget on the roadmap
+**[chasqui.chat](https://chasqui.chat)** · WhatsApp today · Telegram and web widget on the roadmap
 
 [![PyPI](https://img.shields.io/pypi/v/chasqui?label=chasqui%20CLI)](https://pypi.org/project/chasqui/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
