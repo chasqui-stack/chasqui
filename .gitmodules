@@ -7,3 +7,6 @@
 [submodule "whatsapp"]
 	path = whatsapp
 	url = https://github.com/chasqui-stack/whatsapp.git
+[submodule "telegram"]
+	path = telegram
+	url = https://github.com/chasqui-stack/telegram.git
