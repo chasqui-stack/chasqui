@@ -13,7 +13,7 @@ It ships with a project generator (**`uvx chasqui new`**, the [`cli`](https://gi
 ## 2. Design principles
 
 1. **Proven, low-surprise topology.** Gateway → Core → Admin. Three deployables — the minimum that the runtime constraints allow. "Boring" here is a virtue (see *Choose Boring Technology*): well-understood components, predictable failure modes, low operational surprise. No speculative services.
-2. **Channel-pluggable.** The gateway is an *adapter*. WhatsApp (PyWa) is channel #1; web widget, Telegram, Instagram are future adapters that never touch the core.
+2. **Channel-pluggable.** The gateway is an *adapter*. WhatsApp (PyWa) and Telegram (python-telegram-bot) are live channels speaking the same contract; web widget and Instagram are future adapters that never touch the core.
 3. **Tool-pluggable.** Agent tools are each company's differentiator. A clean **Tool Registry** lets you add them as self-contained modules without modifying the core.
 4. **Config vs. code.** Frequently-changing things (prompts, FAQs, toggling tools) are editable from the admin with no redeploy. New behavior is code you add via the tool system.
 5. **The core is the heart.** FastAPI + LangGraph + Postgres. All business logic lives here. Logic is never scattered across services.
@@ -239,6 +239,7 @@ chasqui-stack/chasqui          # parent repo (orchestration, docs, generator)
 ├── core/      → chasqui-stack/core       (submodule: FastAPI backend)
 ├── admin/     → chasqui-stack/admin      (submodule: React/Vite admin)
 ├── whatsapp/  → chasqui-stack/whatsapp   (submodule: PyWa gateway)
+├── telegram/  → chasqui-stack/telegram   (submodule: python-telegram-bot gateway)
 ├── docs/                      # architecture, design, ADRs, roadmap
 ├── generate-project.sh        # project generator (rsync + variable substitution)
 ├── docker-compose.yml         # one-command spin-up for collaborators
@@ -251,8 +252,9 @@ chasqui-stack/chasqui          # parent repo (orchestration, docs, generator)
 | `chasqui-stack/core` | FastAPI + LangGraph backend |
 | `chasqui-stack/admin` | React/Vite admin panel |
 | `chasqui-stack/whatsapp` | PyWa gateway (WhatsApp channel) |
+| `chasqui-stack/telegram` | python-telegram-bot gateway (Telegram channel) |
 
-Future channel adapters become their own repos under the same org (`chasqui-stack/web`, `chasqui-stack/telegram`), each consuming the canonical message contract.
+Channel adapters are their own repos under the same org, each consuming the canonical message contract. `chasqui-stack/telegram` is the second one (live); `chasqui-stack/web` and others follow the same shape.
 
 ## 10. Tech stack
 
