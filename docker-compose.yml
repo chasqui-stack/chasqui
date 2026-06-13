@@ -1,7 +1,9 @@
 # One-command spin-up for collaborators (native local dev with psql + uv + npm
 # remains the primary workflow). Default `docker compose up` starts postgres +
-# core + admin. The WhatsApp gateway needs Meta credentials, so it's behind the
-# `gateway` profile: `docker compose --profile gateway up` (requires ./whatsapp/.env).
+# core + admin. Channel gateways need credentials, so each is behind a profile:
+#   docker compose --profile gateway up    # both gateways
+#   docker compose --profile whatsapp up   # just WhatsApp (needs ./whatsapp/.env)
+#   docker compose --profile telegram up   # just Telegram (needs ./telegram/.env)
 services:
   postgres:
     image: pgvector/pgvector:pg17
@@ -77,8 +79,10 @@ services:
       STORAGE_ACCESS_KEY: chasqui
       STORAGE_SECRET_KEY: chasqui-secret
       # Outbound seam (ADR-004): where operator replies go. Only resolvable
-      # when the gateway profile is up; sends fail with a clear error otherwise.
+      # when the matching gateway profile is up; sends fail with a clear error
+      # otherwise.
       CHANNEL_WHATSAPP_SEND_URL: "http://whatsapp:8000/send"
+      CHANNEL_TELEGRAM_SEND_URL: "http://telegram:8001/send"
     command: sh -c "alembic upgrade head && gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8090"
     ports:
       - "8090:8090"
@@ -95,7 +99,7 @@ services:
 
   whatsapp:
     build: ./whatsapp
-    profiles: ["gateway"]
+    profiles: ["gateway", "whatsapp"]
     depends_on:
       - core
     env_file:
@@ -105,6 +109,19 @@ services:
       INTERNAL_API_KEY: devkey
     ports:
       - "8000:8000"
+
+  telegram:
+    build: ./telegram
+    profiles: ["gateway", "telegram"]
+    depends_on:
+      - core
+    env_file:
+      - ./telegram/.env
+    environment:
+      CORE_URL: "http://core:8090"
+      INTERNAL_API_KEY: devkey
+    ports:
+      - "8001:8001"
 
 volumes:
   pgdata:
