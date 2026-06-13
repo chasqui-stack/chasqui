@@ -117,6 +117,12 @@ The seam that makes the system multi-channel. The core never knows WhatsApp exis
 An **empty `messages` list is silence** — that's how human-mode conversations
 (§5.1) go quiet on every channel with zero gateway changes.
 
+**`message.text` is standard Markdown, both directions.** The core emits one
+canonical markup; each gateway renders it to its platform (Telegram →
+MarkdownV2, WhatsApp → `*bold*`/`_italic_`, …) — formatting is presentation, so
+it lives in the adapter, exactly like media transcoding. The core never
+formats for a channel ([ADR-007](./design/adr-007-canonical-markdown-rendering.md)).
+
 ### 5.1 Canonical outbound contract — `POST /send` (ADR-004)
 
 The mirror of `/ingest`, for **admin-initiated** messages (the human-handoff
