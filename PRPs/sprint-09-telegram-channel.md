@@ -2,7 +2,12 @@
 
 > **Version:** 1.0
 > **Created:** 2026-06-12
-> **Status:** Ready
+> **Status:** Completed — accepted by Willy 2026-06-13. Live e2e: Telegram
+> inbound text + photo + voice note → agent reply (multimodal), MarkdownV2
+> rendering, human-mode silence; WhatsApp markdown after the i18n fix. Shipped
+> as **v0.2.0** across the stack + `chasqui` 0.2.0 on PyPI (verified
+> `uvx chasqui@0.2.0 new --channels whatsapp,telegram`). Decisions: ADR-006
+> (Telegram lib + webhook), ADR-007 (canonical Markdown rendering).
 
 ---
 
