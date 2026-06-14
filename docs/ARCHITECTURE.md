@@ -115,7 +115,9 @@ The seam that makes the system multi-channel. The core never knows WhatsApp exis
 ```
 
 An **empty `messages` list is silence** — that's how human-mode conversations
-(§5.1) go quiet on every channel with zero gateway changes.
+(§5.1) go quiet on every channel with zero gateway changes. It is **also** the
+ack of the deferred-dispatch mode (§5.2): the agent reply arrives moments later
+via `POST /send`, not in this response.
 
 **`message.text` is standard Markdown, both directions.** The core emits one
 canonical markup; each gateway renders it to its platform (Telegram →
@@ -151,11 +153,29 @@ customer-service window → `WINDOW_EXPIRED`). Conversation ownership lives in
 FIRST and runs no agent turn in human mode. Full rationale:
 `docs/design/adr-004-conversation-mode-outbound-send.md`.
 
+### 5.2 Inbound coalescing & deferred dispatch (ADR-008)
+
+People fragment a thought across several quick sends. To answer the **whole
+burst once** (coherent, 1 turn not N), the core can **debounce** inbound: when
+`INBOUND_DEBOUNCE_SECONDS > 0` (default 5), `/ingest` persists the message,
+arms a per-conversation silence window, and returns the **empty ack** above —
+**no turn runs inline**. A Postgres-backed worker (`FOR UPDATE SKIP LOCKED`,
+multi-replica safe — no broker, ADR-002) claims conversations whose window has
+elapsed, runs **one** turn over the batch, and **dispatches the reply via the
+`/send` seam (§5.1)** — the reply path flips from synchronous to deferred over
+the seam that already exists.
+
+This makes `CHANNEL_<CH>_SEND_URL` a **prerequisite** for every active channel
+when debounce > 0. Setting `INBOUND_DEBOUNCE_SECONDS = 0` restores the legacy
+**synchronous** reply (in the `/ingest` body, no worker). Etapa 1 (a per-identity
+advisory lock) serializes turns and is held in both paths. Full rationale:
+`docs/design/adr-008-deferred-dispatch-coalescing.md`.
+
 ## 6. Core domain model
 
 - **`contacts`** — the person on the other side. Unique by `(channel, external_id)`, where `external_id` is the **BSUID** for WhatsApp. `wa_id` is stored when available but is no longer the primary key (§10).
-- **`conversations`** — a **single thread per contact**. `mode` (`"agent" | "human"`, indexed) says who owns the replies (ADR-004); orchestrator state lives in `conversation_state` (or embedded).
-- **`messages`** — full inbound/outbound history with type + metadata. This is the LLM context.
+- **`conversations`** — a **single thread per contact**. `mode` (`"agent" | "human"`, indexed) says who owns the replies (ADR-004); orchestrator state lives in `conversation_state`; `debounce_due_at` is the inbound-coalescing window the worker claims (ADR-008).
+- **`messages`** — full inbound/outbound history with type + metadata. This is the LLM context. `processed_at` marks an inbound as folded into a turn (NULL = pending for the coalesce worker, ADR-008).
 - **`memories`** — long-term memory extraction so the agent doesn't forget the past (summaries, facts about the contact). A memory retriever injects what's relevant into the prompt. Backed by `pgvector`.
 - **Orchestrator (LangGraph):** a configurable state machine. The base ships a minimal graph (router → tools → respond); each project extends it.
 
