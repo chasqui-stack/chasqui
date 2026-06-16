@@ -171,6 +171,25 @@ when debounce > 0. Setting `INBOUND_DEBOUNCE_SECONDS = 0` restores the legacy
 advisory lock) serializes turns and is held in both paths. Full rationale:
 `docs/design/adr-008-deferred-dispatch-coalescing.md`.
 
+### 5.3 Audio handling: native → STT → graceful (ADR-010)
+
+An inbound voice note (`type: "audio"`) is resolved in three tiers, by the
+configured LLM's capabilities (`app/core/llm_capabilities.py`):
+
+1. **Native audio** (`caps.audio = True`, e.g. Gemini) — the audio rides into
+   the turn as a content block; the model hears it directly.
+2. **STT fallback** (`caps.audio = False` **and** `STT_PROVIDER` set) — the core
+   transcribes the audio to text **before** the turn (`app/services/transcription.py`),
+   so an audio-less LLM (Anthropic, plain OpenAI GPT, …) can still answer. The
+   transcriber is an **OpenAI-compatible** client (Groq `whisper-large-v3-turbo`
+   by default — native OGG/Opus, no transcoding); its key (`STT_API_KEY`) is
+   **separate** from the LLM's, since the LLM provider is deliberately not the
+   audio one. Opt-in and best-effort: any failure falls through to tier 3.
+3. **Graceful degradation** (no native audio, STT off/failed) — the agent is
+   told it received a voice note it can't hear and asks the user to type it.
+
+Full rationale: `docs/design/adr-010-stt-audio-fallback.md`.
+
 ## 6. Core domain model
 
 - **`contacts`** — the person on the other side. Unique by `(channel, external_id)`, where `external_id` is the **BSUID** for WhatsApp. `wa_id` is stored when available but is no longer the primary key (§10).
