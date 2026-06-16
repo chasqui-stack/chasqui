@@ -344,5 +344,5 @@ cd admin && npm install && npm run dev
 
 - **Web channel** (e.g. a logged-in web agent) — a new adapter + an SSR frontend where streaming/SSR earn their place.
 - Semi-generic **"customer-defined collection + retriever"** module.
-- Additional channel adapters (Telegram, Instagram).
-- Background workers / queues (`arq` / Celery) only when needed — FastAPI background tasks until then.
+- Additional channel adapters (Instagram, web widget, …). *(Telegram shipped in v0.2.0, ADR-006.)*
+- Broker-backed workers / queues (`arq` / Celery) only if the Postgres-backed worker outgrows the DB — Postgres is the queue today (ADR-002, ADR-008's deferred-dispatch worker).
