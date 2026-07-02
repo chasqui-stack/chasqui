@@ -10,3 +10,6 @@
 [submodule "telegram"]
 	path = telegram
 	url = https://github.com/chasqui-stack/telegram.git
+[submodule "web"]
+	path = web
+	url = https://github.com/chasqui-stack/web.git
