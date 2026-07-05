@@ -59,6 +59,27 @@ other channel — plus:
   (§10 analog). Cleared storage = a new visitor. Capturing a name/email is a
   system-prompt concern, not the channel's.
 
+## Adding it to an existing project
+
+Scaffolded before the web channel existed (or skipped it in the wizard)? No
+re-scaffold needed — drop the service in and wire two env vars:
+
+```bash
+# from your project root — fetch the service at your stack's tag
+npx degit chasqui-stack/web#v0.3.0 web
+
+cp web/.env.example web/.env
+# in web/.env: set INTERNAL_API_KEY to the SAME value as core/.env,
+#              and WEB_ALLOWED_ORIGINS to the sites that will embed it
+
+echo 'CHANNEL_WEB_SEND_URL=http://localhost:8002/send' >> core/.env
+
+cd web && npm install && npm run build && npm run dev
+```
+
+Restart the core so it picks up `CHANNEL_WEB_SEND_URL`. That's all — the
+channel needs nothing else from the rest of the stack.
+
 ## Production notes
 
 - Serve the gateway over **HTTPS** (mic capture requires a secure context).
