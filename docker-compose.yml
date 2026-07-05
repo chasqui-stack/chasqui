@@ -123,6 +123,20 @@ services:
     ports:
       - "8001:8001"
 
+  web:
+    build: ./web
+    profiles: ["gateway", "web"]
+    depends_on:
+      - core
+    env_file:
+      - ./web/.env
+    environment:
+      CORE_URL: "http://core:8090"
+      INTERNAL_API_KEY: devkey
+      WEB_ALLOWED_ORIGINS: "http://localhost:8002"
+    ports:
+      - "8002:8002"
+
 volumes:
   pgdata:
   storagedata:

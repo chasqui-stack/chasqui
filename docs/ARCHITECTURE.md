@@ -190,6 +190,22 @@ configured LLM's capabilities (`app/core/llm_capabilities.py`):
 
 Full rationale: `docs/design/adr-010-stt-audio-fallback.md`.
 
+### 5.4 Internal conversation read — rehydration (ADR-011)
+
+The core exposes **one** gateway-facing read (everything else is admin/JWT):
+
+```
+GET /conversations/{channel}/{external_id}/messages   (INTERNAL_API_KEY)
+```
+
+the **read-mirror of `/ingest`**. It is **generic** (channel is a path param, no
+per-channel branching) and **read-only** (404 on an absent contact — never
+creates), returning a thread's recent messages newest-first with the admin
+serialization (`has_media` boolean, **never** embeddings or media payloads). The
+web channel uses it to rehydrate a visitor's chat on (re)open — including replies
+delivered while the tab was closed; any channel can. Full rationale:
+`docs/design/adr-011-web-channel.md`.
+
 ## 6. Core domain model
 
 - **`contacts`** — the person on the other side. Unique by `(channel, external_id)`, where `external_id` is the **BSUID** for WhatsApp. `wa_id` is stored when available but is no longer the primary key (§10).
@@ -342,7 +358,7 @@ cd admin && npm install && npm run dev
 
 ## 12. Roadmap (post v1)
 
-- **Web channel** (e.g. a logged-in web agent) — a new adapter + an SSR frontend where streaming/SSR earn their place.
+- **Web channel (embeddable widget)** — anonymous visitors, live outbound over **SSE**, a Preact widget served by a Node gateway (`chasqui-stack/web`). **MVP in progress** (ADR-011, epic #23) — deliberately *not* SSR and *not* logged-in; chunked/token streaming is a gateway-local follow-up.
 - Semi-generic **"customer-defined collection + retriever"** module.
-- Additional channel adapters (Instagram, web widget, …). *(Telegram shipped in v0.2.0, ADR-006.)*
+- Additional channel adapters (Instagram, …). *(Telegram shipped in v0.2.0, ADR-006.)*
 - Broker-backed workers / queues (`arq` / Celery) only if the Postgres-backed worker outgrows the DB — Postgres is the queue today (ADR-002, ADR-008's deferred-dispatch worker).
