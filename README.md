@@ -4,7 +4,7 @@
 
 **Open-source stack for building custom AI chat agents — self-hosted, channel-agnostic, production-minded.**
 
-**[chasqui.chat](https://chasqui.chat)** · WhatsApp and Telegram today · web widget on the roadmap
+**[chasqui.chat](https://chasqui.chat)** · WhatsApp · Telegram · embeddable web widget
 
 [![PyPI](https://img.shields.io/pypi/v/chasqui?label=chasqui%20CLI)](https://pypi.org/project/chasqui/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
@@ -39,7 +39,9 @@ with the pgvector extension (or use the generated docker-compose). For the
 WhatsApp channel you'll want a free Meta developer app
 ([`docs/WHATSAPP-SETUP.md`](./docs/WHATSAPP-SETUP.md)); for Telegram, just a
 [@BotFather](https://t.me/BotFather) token, ~2 minutes
-([`docs/TELEGRAM-SETUP.md`](./docs/TELEGRAM-SETUP.md)).
+([`docs/TELEGRAM-SETUP.md`](./docs/TELEGRAM-SETUP.md)); the web widget needs
+no account at all — one `<script>` tag
+([`docs/WEB-SETUP.md`](./docs/WEB-SETUP.md)).
 
 ```bash
 uvx chasqui new my-agent      # the wizard asks: LLM, embeddings, where's
@@ -50,6 +52,7 @@ cd my-agent                   # your Postgres, ports, WhatsApp creds
 cd core && make dev           # API on :8090
 cd whatsapp && make dev       # WhatsApp gateway on :8000
 cd telegram && make dev       # Telegram gateway on :8001 (optional)
+cd web && npm run dev         # web widget gateway on :8002 (optional)
 cd admin && npm run dev       # operator panel on http://localhost:5191
 ```
 
@@ -74,17 +77,18 @@ the contract once, inherited by every channel for free.
 flowchart LR
     U((user)) <--> WA
     U <--> TG
+    U <--> WEB
 
     subgraph CH [channels]
         direction TB
         WA["whatsapp/<br/>PyWa gateway (stateless)"]
         TG["telegram/<br/>PTB gateway (stateless)"]
-        WEB["web widget<br/><i>roadmap</i>"]
+        WEB["web/<br/>widget + SSE gateway"]
     end
 
     WA <-->|"canonical contract<br/>/ingest · /send"| CORE
     TG <-->|same contract| CORE
-    WEB <-.->|same contract| CORE
+    WEB <-->|same contract| CORE
 
     CORE["core/<br/>FastAPI + LangGraph<br/>agent · memory · RAG ·<br/>tool modules · handoff inbox"]
     DB[("Postgres<br/>+ pgvector")]
@@ -92,8 +96,6 @@ flowchart LR
 
     CORE <--> DB
     ADMIN <-->|REST · JWT| CORE
-
-    style WEB stroke-dasharray: 5 5
 ```
 
 | Repo | Stack | Role |
@@ -101,6 +103,7 @@ flowchart LR
 | [`core`](https://github.com/chasqui-stack/core) | FastAPI · LangGraph · SQLModel · Postgres/pgvector | The conversation engine: ingest, agent, memory, RAG, tool registry, handoff inbox, admin auth |
 | [`whatsapp`](https://github.com/chasqui-stack/whatsapp) | PyWa 4.x (BSUID-first) · FastAPI | WhatsApp channel gateway |
 | [`telegram`](https://github.com/chasqui-stack/telegram) | python-telegram-bot · FastAPI | Telegram channel gateway — same canonical contract |
+| [`web`](https://github.com/chasqui-stack/web) | Express · Vite · Preact (compat) | Embeddable chat widget + SSE gateway — same contract, live replies in the browser |
 | [`admin`](https://github.com/chasqui-stack/admin) | React 19 · Vite · Tailwind · shadcn/ui | Operator panel: prompts, FAQ, tools, conversations, inbox, leads |
 | [`cli`](https://github.com/chasqui-stack/cli) | typer · PyPI `chasqui` | `chasqui new` / `chasqui generate module` |
 
@@ -108,7 +111,6 @@ Full design: **[`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)**.
 
 ## Roadmap
 
-- **Web chat widget** — embeddable channel for any website.
 - **Analytics** — conversation stats module for the panel.
 - **Document RAG** — knowledge base beyond FAQ pairs (PDFs, docs).
 

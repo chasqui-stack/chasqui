@@ -11,6 +11,8 @@ Chasqui is a base development stack for building custom AI agents on WhatsApp. T
 | `core/` | `chasqui-stack/core` | FastAPI + LangGraph + Postgres/pgvector | The heart: ingest, orchestrator, memory, RAG, tool registry, admin auth |
 | `admin/` | `chasqui-stack/admin` | React 19 + Vite + Tailwind + shadcn/ui | Operator panel (prompts, FAQ-RAG, tool config, conversations) |
 | `whatsapp/` | `chasqui-stack/whatsapp` | PyWa 4.x (BSUID-first) + FastAPI | Stateless WhatsApp channel adapter |
+| `telegram/` | `chasqui-stack/telegram` | python-telegram-bot + FastAPI | Stateless Telegram channel adapter |
+| `web/` | `chasqui-stack/web` | Express + Vite + Preact (compat) | Embeddable chat widget + SSE gateway (ADR-011) — the one channel that ships its own client |
 
 Services talk only through the **canonical message contract** (`docs/ARCHITECTURE.md` §5). The core never knows a channel exists.
 
