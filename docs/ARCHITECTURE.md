@@ -121,9 +121,31 @@ via `POST /send`, not in this response.
 
 **`message.text` is standard Markdown, both directions.** The core emits one
 canonical markup; each gateway renders it to its platform (Telegram →
-MarkdownV2, WhatsApp → `*bold*`/`_italic_`, …) — formatting is presentation, so
-it lives in the adapter, exactly like media transcoding. The core never
-formats for a channel ([ADR-007](./design/adr-007-canonical-markdown-rendering.md)).
+MarkdownV2, WhatsApp → `*bold*`/`_italic_`, web widget → DOM nodes) —
+formatting is presentation, so it lives in the adapter, exactly like media
+transcoding. The core never formats for a channel
+([ADR-007](./design/adr-007-canonical-markdown-rendering.md)).
+
+The **canonical dialect** is this Markdown subset — what the agent may emit
+and every gateway (including third-party channels built with the
+`chasqui-create-channel` skill) MUST render:
+
+| Construct | Canonical form |
+|-----------|----------------|
+| Bold | `**text**` |
+| Italic | `*text*` or `_text_` |
+| Strikethrough | `~~text~~` |
+| Inline code / fenced block | `` `code` `` / ` ``` ` |
+| Flat bullet list | `- item` (one level) |
+| Link | `[label](url)` or a bare URL |
+
+Headings (`#`), tables, nested lists, images-in-Markdown and HTML are **out of
+the dialect** — chat bubbles have nowhere to put them. Gateways degrade
+anything outside the subset gracefully rather than showing raw markup (e.g.
+headings render as bold), but prompts must not rely on that. Note the
+WhatsApp-syntax corollary: a persona prompt that asks for "WhatsApp
+formatting" makes the agent emit `*bold*`, which is canonical *italic* — ask
+for light standard Markdown instead and let the gateways transpose.
 
 ### 5.1 Canonical outbound contract — `POST /send` (ADR-004)
 
