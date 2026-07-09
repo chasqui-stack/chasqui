@@ -62,11 +62,23 @@ other channel — plus:
 ## Adding it to an existing project
 
 Scaffolded before the web channel existed (or skipped it in the wizard)? No
-re-scaffold needed — drop the service in and wire two env vars:
+re-scaffold needed — one command from your project root:
+
+```bash
+uvx chasqui add channel web
+```
+
+It fetches `web/` at your project's stack tag, writes `web/.env` reusing the
+core's `INTERNAL_API_KEY` (asks only the web questions — port, allowed
+origins), wires `CHANNEL_WEB_SEND_URL` into `core/.env` and runs
+`npm install`. Then restart the core and `cd web && npm run dev`.
+
+<details>
+<summary>Manual path (what the command does, degit-style)</summary>
 
 ```bash
 # from your project root — fetch the service at your stack's tag
-npx degit chasqui-stack/web#v0.3.0 web
+npx degit chasqui-stack/web#v0.4.0 web
 
 cp web/.env.example web/.env
 # in web/.env: set INTERNAL_API_KEY to the SAME value as core/.env,
@@ -77,8 +89,10 @@ echo 'CHANNEL_WEB_SEND_URL=http://localhost:8002/send' >> core/.env
 cd web && npm install && npm run build && npm run dev
 ```
 
-Restart the core so it picks up `CHANNEL_WEB_SEND_URL`. That's all — the
-channel needs nothing else from the rest of the stack.
+Restart the core so it picks up `CHANNEL_WEB_SEND_URL`.
+</details>
+
+That's all — the channel needs nothing else from the rest of the stack.
 
 ## Production notes
 
