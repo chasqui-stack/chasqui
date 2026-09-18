@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** In review — chasqui-stack/admin#8 (2026-09-18)
+> **Status:** Done — merged 2026-09-18 (chasqui-stack/admin#8)
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 2/4 — requires 15.1 merged (its endpoints are this page's API)
 
