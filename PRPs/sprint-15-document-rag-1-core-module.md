@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** Ready
+> **Status:** Done — merged 2026-09-18 (chasqui-stack/core#15; follow-up fix core#16)
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 1/4 — execute in order: 15.1 → 15.2 → 15.3 → 15.4
 

@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** Ready
+> **Status:** In review — chasqui-stack/admin#8 (2026-09-18)
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 2/4 — requires 15.1 merged (its endpoints are this page's API)
 
@@ -102,8 +102,10 @@ multi-file drop, the agent tool (15.3).
 //    whole "knowledge" block to BOTH, with identical keys and placeholders.
 // 2. onDragOver MUST call e.preventDefault() or onDrop never fires (browser opens
 //    the file instead). Also guard a dragging state for the highlight styling.
-// 3. Don't set { "Content-Type": "multipart/form-data" } on the axios call —
-//    setting it manually drops the boundary parameter. Pass FormData bare.
+// 3. CORRECTED during execution: apiClient defaults to application/json, and
+//    axios then serializes a bare FormData AS JSON. Declare
+//    { "Content-Type": "multipart/form-data" } on the call — axios 1.x strips it
+//    for FormData bodies so the browser still sets the boundary.
 // 4. Node >= 22 for dev/build (nvm use 22 — .nvmrc).
 // 5. Amber is never body text on light surfaces (WCAG); use it for the drag-over
 //    ring/border and dark-mode primary only. Terracotta strictly for error/destroy.
