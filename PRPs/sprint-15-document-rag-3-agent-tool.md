@@ -2,11 +2,35 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** Ready
+> **Status:** In review — chasqui-stack/core#17 (2026-09-18)
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 3/4 — requires 15.1 merged (15.2 helps for e2e but isn't a blocker)
 
 ---
+
+## Execution notes (2026-09-18) — what the eval changed
+
+The routing eval (Task 6) overruled three points of this PRP as written; the
+PR (core#17) carries the full table.
+
+1. **Gotcha #2 was wrong — no ~600-char passage cap.** Truncating dropped the
+   answer whenever it sat in the second half of a chunk (reproduced: warranty
+   steps starting at char 462 of a 1162-char chunk). Chunks are bounded by
+   `CHUNK_SIZE` already; the tool returns them whole.
+2. **Decision 1 was too timid.** Appending one sentence to `faq_search` was not
+   enough: its "ANY question … prices, how-tos" claim kept winning the first
+   pick (docs side 2–4/5). The docstring was re-scoped (keeping the chasqui#30
+   "you do NOT know this from training" wording). First docstring lines must be
+   complete sentences — the Tools page shows only that line.
+3. **New: handover in tool returns.** A `faq_search` miss read as "stop" and
+   the agent gave up. Both tools now point at the sibling on a miss AND on a
+   hit (near-misses), only while the sibling is registered + enabled. Decision
+   4 holds: no system-prompt routing.
+4. **Added (ADR-012 mirror):** opt-in `inject_document_index` /
+   `document_index_max` knobs — filenames of `ready` documents as a prompt
+   fragment, default off.
+
+Final: FAQ first-round 25/25, docs 22/25 (≥4/5 every run), grounded 50/50.
 
 ## Goal
 
