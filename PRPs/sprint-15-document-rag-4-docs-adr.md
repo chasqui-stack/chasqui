@@ -3,7 +3,7 @@
 > **Version:** 1.0
 > **Created:** 2026-07-12
 > **Status:** Ready
-> **Executor:** Bryan (@BryanDev2023) with close review, or Willy · **Reviewer:** Willy (@willywg)
+> **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 4/4 — requires 15.1–15.3 merged. A sprint isn't closed until docs reflect it.
 
 ---

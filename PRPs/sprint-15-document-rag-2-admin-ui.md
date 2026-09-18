@@ -3,7 +3,7 @@
 > **Version:** 1.0
 > **Created:** 2026-07-12
 > **Status:** Ready
-> **Executor:** Bryan (@BryanDev2023) · **Reviewer:** Willy (@willywg)
+> **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 2/4 — requires 15.1 merged (its endpoints are this page's API)
 
 ---
@@ -181,7 +181,7 @@ npm run dev   # login → Knowledge Base page
 - [ ] Delete with ConfirmDialog; search preview scored
 - [ ] en/es complete (parity test green); no hardcoded strings; tokens only
 - [ ] lint + build + test green
-- [ ] PR from your fork → `chasqui-stack/admin`, branch `feat/knowledge-page`,
+- [ ] PR → `chasqui-stack/admin`, branch `feat/knowledge-page`,
       title `feat: knowledge base page — upload, states, delete (Sprint 15.2)`,
       body `Closes #<admin-issue-number>`
 

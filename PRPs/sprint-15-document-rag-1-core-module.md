@@ -3,7 +3,7 @@
 > **Version:** 1.0
 > **Created:** 2026-07-12
 > **Status:** Ready
-> **Executor:** Bryan (@BryanDev2023) · **Reviewer:** Willy (@willywg)
+> **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 1/4 — execute in order: 15.1 → 15.2 → 15.3 → 15.4
 
 ---
@@ -238,7 +238,7 @@ curl -s "localhost:8090/admin/modules/knowledge/search?q=refund+policy" \
 - [ ] One batched embed call per document; outage → error, never a 500
 - [ ] Delete cascades chunks; search preview scored like FAQ's
 - [ ] `make test` green; zero edits outside the module + migration + tests + deps
-- [ ] PR from your fork → `chasqui-stack/core`, branch `feat/knowledge-module`,
+- [ ] PR → `chasqui-stack/core`, branch `feat/knowledge-module`,
       title `feat: knowledge module — document upload, chunking, embedding (Sprint 15.1)`,
       body `Closes #<core-issue-number>`
 

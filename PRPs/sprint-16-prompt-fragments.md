@@ -77,4 +77,4 @@ cd core && make test   # 165 passed
 - [x] faq_search docstring business-agnostic
 - [x] Tests green (165), including framing assertions
 - [x] ADR-012 + MODULES.md + ARCHITECTURE §8 + core AGENTS.md
-- [ ] Dogfood verification on chasqui.chat (post-merge, Willy)
+- [x] Dogfood verification on chasqui.chat — knob enabled in prod 2026-09-18; the skills-install question now triggers `faq_search` and returns the KB answer

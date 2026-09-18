@@ -3,7 +3,7 @@
 > **Version:** 1.0
 > **Created:** 2026-07-12
 > **Status:** Ready
-> **Executor:** Bryan (@BryanDev2023) · **Reviewer:** Willy (@willywg)
+> **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 3/4 — requires 15.1 merged (15.2 helps for e2e but isn't a blocker)
 
 ---
@@ -187,7 +187,7 @@ cd core && make test                    # green, incl. extended test_knowledge.p
 - [ ] faq_search docstring boundary added (and nothing else touched in faq)
 - [ ] 10-question eval done and reported in the PR description (routing table)
 - [ ] make test green
-- [ ] PR from your fork → `chasqui-stack/core`, branch `feat/knowledge-tool`,
+- [ ] PR → `chasqui-stack/core`, branch `feat/knowledge-tool`,
       title `feat: search_documents tool + FAQ boundary (Sprint 15.3)`,
       body `Closes #<core-issue-number>` + the eval results table
 
