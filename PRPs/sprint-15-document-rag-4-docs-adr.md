@@ -10,7 +10,7 @@
 
 ## Goal
 
-The paper trail for Document-RAG: **ADR-012** recording the decisions taken in
+The paper trail for Document-RAG: **ADR-013** recording the decisions taken in
 15.1/15.3, the affected docs updated (parent ARCHITECTURE/MODULES, core README/AGENTS,
 admin README/AGENTS), and a release-notes draft. Explicitly verified: **no CLI or
 skills changes are needed** (and why).
@@ -30,7 +30,7 @@ in the cli repo's AGENTS.md), website/landing updates.
 
 ### Success Criteria
 
-- [ ] `docs/design/adr-012-document-rag.md` merged, matching the house ADR shape
+- [ ] `docs/design/adr-013-document-rag.md` merged, matching the house ADR shape
       (Status/Sprint/Related header, Context, Decision, Consequences — honest
       negatives included, Alternatives considered, Follow-ups).
 - [ ] `docs/ARCHITECTURE.md` §8 mentions the `knowledge` module next to `faq` as a
@@ -59,7 +59,7 @@ in the cli repo's AGENTS.md), website/landing updates.
 - file: chasqui/AGENTS.md                      # docs-as-code conventions, end-of-sprint rule
 ```
 
-### ADR-012 content map (write it from these, in your own words)
+### ADR-013 content map (write it from these, in your own words)
 
 - **Context:** FAQ-RAG answers curated Q&A; businesses hold knowledge in files.
   Post-MVP backlog item since Sprint 4. Constraint: must work on every install
@@ -104,7 +104,7 @@ and running `uvx chasqui new` against a local --source checkout if in doubt.
 
 ```yaml
 Task 1 - ADR:
-  - CREATE docs/design/adr-012-document-rag.md (content map above; Status:
+  - CREATE docs/design/adr-013-document-rag.md (content map above; Status:
     Accepted — <merge date>; Sprint: 15; Related: ADR-001, ADR-003, ADR-008,
     ARCHITECTURE §8; Refs the epic issue #N)
 Task 2 - Parent docs:
@@ -133,7 +133,7 @@ rg -l "faq" docs/ core/README.md core/AGENTS.md   # each hit: does it also need 
 
 ## Final Checklist
 
-- [ ] ADR-012 merged (parent repo), linked from the epic
+- [ ] ADR-013 merged (parent repo), linked from the epic
 - [ ] ARCHITECTURE §8 + MODULES.md + core & admin READMEs/AGENTS updated
 - [ ] Release-notes draft + no-CLI-change rationale posted on the epic
 - [ ] PRs reference the epic (`Refs chasqui-stack/chasqui#N`)

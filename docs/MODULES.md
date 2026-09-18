@@ -7,7 +7,7 @@ startup. You never edit the core.
 
 Reference implementations, in increasing order of surface:
 
-- [`core/app/modules/memory/`](https://github.com/chasqui-stack/core/tree/main/app/modules/memory) — tools only
+- [`core/app/modules/memory/`](https://github.com/chasqui-stack/core/tree/main/app/modules/memory) — tools + a prompt fragment (retrieved facts)
 - [`core/app/modules/faq/`](https://github.com/chasqui-stack/core/tree/main/app/modules/faq) — tools + table + admin routes + config (**read this one first**)
 - [`core/app/modules/handoff/`](https://github.com/chasqui-stack/core/tree/main/app/modules/handoff) — conversation-state side effects + notifications
 
@@ -39,6 +39,9 @@ class PriceCheckModule:
 
     def config_schema(self):              # optional — admin-editable knobs
         return PriceCheckConfig
+
+    async def system_prompt_fragment(self, context, query):  # optional — per-turn
+        return None                       # prompt block (ADR-012), None = silent
 
 module = PriceCheckModule()
 ```
@@ -89,6 +92,28 @@ class PriceCheckConfig(BaseModel):
 - Parse defensively at call time (bad admin input must not break a turn) —
   copy the `_tool_config()` helper from the scaffold/faq.
 - The core validates panel writes against your schema (422 on violations).
+
+## System-prompt fragments
+
+`system_prompt_fragment(context, query)` (async, optional) lets a module
+append one block to the system prompt **every turn** —
+[ADR-012](./design/adr-012-module-prompt-fragments.md). `context` is the
+turn's `TurnContext`; `query` is the inbound text. Return `None` to stay
+silent. A raising hook is logged and skipped — it never breaks the turn.
+
+Live examples: `memory` publishes the retrieved facts block; `faq` publishes
+its question index behind the `inject_question_index` knob (default off).
+
+Rules that bite:
+
+- **It runs on every turn.** Keep it cheap; anything injected is a per-turn
+  token cost the operator pays forever — make expensive fragments opt-in via
+  `config_schema()` knobs, like `faq` does.
+- **Framing matters:** describe content as *look-up-able* ("call `x_tool`
+  for these"), never as knowledge the model already has — that wording makes
+  models skip the tool and answer from priors (the bug that motivated the
+  hook, chasqui#30).
+- English only, like every LLM-facing string.
 
 ## Tables and migrations
 

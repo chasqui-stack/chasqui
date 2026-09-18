@@ -297,9 +297,10 @@ class ToolModule(Protocol):
     def register_models(self) -> list[type]: ...           # optional: SQLModel tables + Alembic
     def register_admin_routes(self, router) -> None: ...    # optional: admin CRUD/config UI backing
     def config_schema(self) -> type[BaseModel] | None: ...  # optional: per-project settings
+    async def system_prompt_fragment(self, context, query) -> str | None: ...  # optional: per-turn prompt block (ADR-012)
 ```
 
-Each module is self-contained: its tool schema, its optional tables/migrations, its optional admin UI, and its enable/config state per project. This is the open-source extension point — contributors add capabilities as modules.
+Each module is self-contained: its tool schema, its optional tables/migrations, its optional admin UI, its enable/config state per project — and, optionally, a **system-prompt fragment** appended each turn (ADR-012: the memory module publishes retrieved facts this way; faq can publish its question index, opt-in). Fragments are failure-isolated: a broken hook is skipped, never breaking the turn. This is the open-source extension point — contributors add capabilities as modules.
 
 ### 8.3 The reusable archetype
 
