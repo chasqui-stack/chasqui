@@ -43,7 +43,7 @@ It ships with a project generator (**`uvx chasqui new`**, the [`cli`](https://gi
                                                  │   React 19 + Vite SPA      │
                                                  │   ────────────            │
                                                  │   • editable prompts       │
-                                                 │   • FAQ / RAG (CRUD)       │
+                                                 │   • FAQ / RAG + documents  │
                                                  │   • tool enable/config     │
                                                  │   • conversation inspection│
                                                  └────────────────────────────┘
@@ -241,11 +241,12 @@ delivered while the tab was closed; any channel can. Full rationale:
 ### In the base
 - Admin authentication (admins only).
 - Single conversation thread per contact + message history + long-term memory.
-- **FAQ knowledge base with RAG** (mini-RAG over `pgvector`): admins load FAQs/documents, they're embedded, and a retriever tool answers from them. This is a common need, so it's built in.
+- **FAQ knowledge base with RAG** (mini-RAG over `pgvector`): admins curate question/answer pairs, they're embedded, and a retriever tool (`faq_search`) answers from them. This is a common need, so it's built in.
+- **Document knowledge base** (Document-RAG, [ADR-013](./design/adr-013-document-rag.md)): admins upload files (pdf, docx, txt, md, html); the `knowledge` module extracts, chunks and embeds them in the background, and `search_documents` answers from the passages. The two retrievers coexist by design — each tool's description names the other's territory, and each result points at the sibling while it is enabled.
 - **Editable prompts** from the admin (system prompt, persona, rules).
-- **Tool Registry** + a couple of generic example tools (e.g. `faq_search`, a lead-capture / human-handoff tool).
+- **Tool Registry** + generic built-in modules (`faq`, `knowledge`, `memory`, `handoff` — lead capture / human handoff).
 - WhatsApp gateway (PyWa) wired up.
-- Admin panel: prompts, FAQ-RAG, tool enable/config, conversation inspection.
+- Admin panel: prompts, FAQ-RAG, document knowledge base, tool enable/config, conversation inspection.
 - Project generator + Kamal deploy config + docker-compose for collaborators.
 
 ### What you build per company (the differentiator)
@@ -300,7 +301,9 @@ class ToolModule(Protocol):
     async def system_prompt_fragment(self, context, query) -> str | None: ...  # optional: per-turn prompt block (ADR-012)
 ```
 
-Each module is self-contained: its tool schema, its optional tables/migrations, its optional admin UI, its enable/config state per project — and, optionally, a **system-prompt fragment** appended each turn (ADR-012: the memory module publishes retrieved facts this way; faq can publish its question index, opt-in). Fragments are failure-isolated: a broken hook is skipped, never breaking the turn. This is the open-source extension point — contributors add capabilities as modules.
+Each module is self-contained: its tool schema, its optional tables/migrations, its optional admin UI, its enable/config state per project — and, optionally, a **system-prompt fragment** appended each turn (ADR-012: the memory module publishes retrieved facts this way; faq can publish its question index and knowledge its document index, both opt-in). Fragments are failure-isolated: a broken hook is skipped, never breaking the turn. This is the open-source extension point — contributors add capabilities as modules.
+
+Built-in modules: **`faq`** (curated Q&A RAG — the reference implementation), **`knowledge`** (Document-RAG: upload → background extract/chunk/embed with a per-document status, ADR-013), **`memory`** (long-term facts) and **`handoff`** (human handoff + lead capture). When two modules ship similar tools — `faq_search` and `search_documents` — the boundary lives in the tools' own text (descriptions route, results hand over to the enabled sibling), never in the operator-owned system prompt.
 
 ### 8.3 The reusable archetype
 

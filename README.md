@@ -17,7 +17,8 @@ uvx chasqui new my-agent
 
 One command, one wizard, and you have a running AI agent: a single
 conversation thread per contact, long-term memory, an FAQ knowledge base with
-RAG (grounded answers, no hallucinations), **multimodal in and out** (images,
+RAG (grounded answers, no hallucinations), a **document knowledge base** (drop
+in PDFs, Word files or Markdown and the agent answers from them), **multimodal in and out** (images,
 documents, voice notes), a **human handoff inbox** where operators take over
 and reply from the panel, lead capture, and a pluggable tool/module system
 where you build each company's differentiating logic. The LLM is a `.env`
@@ -104,7 +105,7 @@ flowchart LR
 | [`whatsapp`](https://github.com/chasqui-stack/whatsapp) | PyWa 4.x (BSUID-first) · FastAPI | WhatsApp channel gateway |
 | [`telegram`](https://github.com/chasqui-stack/telegram) | python-telegram-bot · FastAPI | Telegram channel gateway — same canonical contract |
 | [`web`](https://github.com/chasqui-stack/web) | Express · Vite · Preact (compat) | Embeddable chat widget + SSE gateway — same contract, live replies in the browser |
-| [`admin`](https://github.com/chasqui-stack/admin) | React 19 · Vite · Tailwind · shadcn/ui | Operator panel: prompts, FAQ, tools, conversations, inbox, leads |
+| [`admin`](https://github.com/chasqui-stack/admin) | React 19 · Vite · Tailwind · shadcn/ui | Operator panel: prompts, FAQ, documents, tools, conversations, inbox, leads |
 | [`cli`](https://github.com/chasqui-stack/cli) | typer · PyPI `chasqui` | `chasqui new` / `chasqui generate module` |
 
 Full design: **[`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)**.
@@ -112,7 +113,7 @@ Full design: **[`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)**.
 ## Roadmap
 
 - **Analytics** — conversation stats module for the panel.
-- **Document RAG** — knowledge base beyond FAQ pairs (PDFs, docs).
+- **Document RAG, next steps** — OCR for scanned PDFs, original-file storage, citations with page/section ([ADR-013](./docs/design/adr-013-document-rag.md) follow-ups).
 
 Issues and ideas welcome — open them in the repo they belong to.
 
