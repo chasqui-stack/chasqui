@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** Ready
+> **Status:** In review — chasqui-stack/chasqui#31 (2026-09-18). Task 3 (core/admin READMEs + AGENTS) already rode the 15.2/15.3 PRs (admin#8, core#17).
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 4/4 — requires 15.1–15.3 merged. A sprint isn't closed until docs reflect it.
 

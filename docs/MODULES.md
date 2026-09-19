@@ -10,6 +10,7 @@ Reference implementations, in increasing order of surface:
 - [`core/app/modules/memory/`](https://github.com/chasqui-stack/core/tree/main/app/modules/memory) — tools + a prompt fragment (retrieved facts)
 - [`core/app/modules/faq/`](https://github.com/chasqui-stack/core/tree/main/app/modules/faq) — tools + table + admin routes + config (**read this one first**)
 - [`core/app/modules/handoff/`](https://github.com/chasqui-stack/core/tree/main/app/modules/handoff) — conversation-state side effects + notifications
+- [`core/app/modules/knowledge/`](https://github.com/chasqui-stack/core/tree/main/app/modules/knowledge) — the second full-contract module (Document-RAG, [ADR-013](./design/adr-013-document-rag.md)): **multipart upload**, **background processing with a status column** (`pending → processing → ready | error`, stale-job takeover, never-raising job with its own session) and a tool that coexists with a similar one
 
 ## Scaffold
 
@@ -102,7 +103,9 @@ turn's `TurnContext`; `query` is the inbound text. Return `None` to stay
 silent. A raising hook is logged and skipped — it never breaks the turn.
 
 Live examples: `memory` publishes the retrieved facts block; `faq` publishes
-its question index behind the `inject_question_index` knob (default off).
+its question index behind the `inject_question_index` knob and `knowledge`
+its list of searchable filenames behind `inject_document_index` (both
+default off).
 
 Rules that bite:
 
@@ -114,6 +117,34 @@ Rules that bite:
   models skip the tool and answer from priors (the bug that motivated the
   hook, chasqui#30).
 - English only, like every LLM-facing string.
+
+## When two tools overlap
+
+`faq_search` (curated Q&A) and `search_documents` (uploaded files) are close
+enough that a model can pick the wrong one — or stop after the first miss
+while the answer sits in the other store. The pattern that fixed it
+([ADR-013](./design/adr-013-document-rag.md), measured with a routing eval),
+reusable whenever your module ships a tool similar to an existing one:
+
+- **Descriptions route.** Each docstring names its own territory *and the
+  sibling's* ("for X use `other_tool` instead; when unsure, call both").
+  Avoid catch-all claims ("ANY question…") — they win every first pick. Keep
+  the first docstring line a complete sentence: the Tools page shows only it.
+- **Results hand over.** On a miss — and on hits, which can be near-misses —
+  end the return with "if you have not already, call `other_tool` before
+  replying". Guard it with `registry.has_tool()` + `tool_enabled()`: never
+  point at a tool the model can't call.
+- **Never route from the system prompt** — it's operator-owned and editable.
+- **Return whole retrieval units.** Truncating passages to save tokens drops
+  the answer whenever it sits past the cut.
+- Docstrings and return strings are prompts: **re-run an eval against the
+  real LLM** when you touch them (5 questions per side over disjoint data is
+  enough to see a regression).
+
+<p align="center">
+  <img src="./assets/knowledge/admin-knowledge-indexed-search.png" alt="Documents page: indexed files and the retrieval preview with similarity scores" width="49%">
+  <img src="./assets/knowledge/admin-tools-knowledge-knobs.png" alt="Tools page: the knowledge module's switch and auto-rendered knobs" width="38%">
+</p>
 
 ## Tables and migrations
 

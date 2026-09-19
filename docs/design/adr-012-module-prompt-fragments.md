@@ -1,6 +1,6 @@
 # ADR-012 — Module system-prompt fragments (and the opt-in FAQ question index)
 
-**Status:** Accepted — 2026-09-18
+**Status:** Accepted — 2026-09-18 · decision 4's docstring wording amended by [ADR-013](./adr-013-document-rag.md) (decision 8)
 **Sprint:** 16
 **Related:** [ARCHITECTURE §8](../ARCHITECTURE.md) (module contract), [MODULES.md](../MODULES.md), [ADR-009](./adr-009-extension-skills.md) (the dogfood deployment that surfaced this), issue [chasqui#30](https://github.com/chasqui-stack/chasqui/issues/30)
 
