@@ -2,7 +2,7 @@
 
 > **Version:** 1.0
 > **Created:** 2026-07-12
-> **Status:** In review — chasqui-stack/core#17 (2026-09-18)
+> **Status:** Done — merged 2026-09-18 (chasqui-stack/core#17)
 > **Executor:** Willy (@willywg) + Claude Code
 > **Series:** 3/4 — requires 15.1 merged (15.2 helps for e2e but isn't a blocker)
 
