@@ -78,7 +78,7 @@ origins), wires `CHANNEL_WEB_SEND_URL` into `core/.env` and runs
 
 ```bash
 # from your project root — fetch the service at your stack's tag
-npx degit chasqui-stack/web#v0.5.0 web
+npx degit chasqui-stack/web#v0.5.1 web
 
 cp web/.env.example web/.env
 # in web/.env: set INTERNAL_API_KEY to the SAME value as core/.env,
